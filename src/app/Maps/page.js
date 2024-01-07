@@ -79,21 +79,59 @@ const MapChart = () => {
             }
         };
 
-        function reset() {
-            if (selectedState) {
-                // Reset the selected state color
-                selectedState.transition().style("fill", null);
-                selectedState = null;
-            }
+        async function reset() {
+            const us = await d3.json("/indonesia.json");
+
+            const b = path.bounds(
+                topojson.feature(us, us.objects.states_provinces)
+            );
+            const s =
+                0.95 /
+                Math.max(
+                    (b[1][0] - b[0][0]) / width,
+                    (b[1][1] - b[0][1]) / height
+                );
+            const t = [
+                (width - s * (b[1][0] + b[0][0])) / 2,
+                (height - s * (b[1][1] + b[0][1])) / 2,
+            ];
+
+            const states = g
+                .append("g")
+                .attr("fill", "#444")
+                .attr("cursor", "pointer")
+                .selectAll("path")
+                .data(
+                    topojson.feature(us, us.objects.states_provinces).features
+                )
+                .join("path")
+                .on("click", clicked)
+                .attr("d", path);
+
+            states.append("title").text((d) => d.properties.name);
+
+            g.append("path")
+                .attr("fill", "none")
+                .attr("stroke", "white")
+                .attr("stroke-linejoin", "round")
+                .attr(
+                    "d",
+                    path(
+                        topojson.mesh(
+                            us,
+                            us.objects.states_provinces,
+                            (a, b) => a !== b
+                        )
+                    )
+                );
 
             svg.transition()
-                .duration(750)
+                .duration(750) // duration of the transition in milliseconds
                 .call(
                     zoom.transform,
-                    d3.zoomIdentity,
+                    d3.zoomIdentity.translate(t[0], t[1]).scale(s),
                     d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
                 );
-            // loadAndRenderMap();
         }
 
         function clicked(event, d) {
