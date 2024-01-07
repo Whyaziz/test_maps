@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import Image from 'next/image'
-import Maps from './Maps/page'
+import Image from "next/image";
+import Maps from "./Maps/page";
 
 export default function Home() {
-  return (
-    <main className="bg-red-500">
-      <Maps />
-    </main>
-  )
+    return (
+        <main className="bg-green-700">
+            <Maps />
+        </main>
+    );
 }
