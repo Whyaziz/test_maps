@@ -7,7 +7,6 @@ import Geomaps from "./Geomaps/page";
 export default function Home() {
     return (
         <main className="bg-green-700">
-            <Maps />
             <Geomaps />
         </main>
     );
