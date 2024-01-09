@@ -18,8 +18,9 @@ const Geomaps = () => {
 
     const onEachFeature = (feature, layer) => {
       layer.on({
-        click: (e) => {
-          e.originalEvent.stopPropagation();
+        mouseover: () => layer.setStyle(highlightStyle),
+        mouseout: () => layer.setStyle(normalStyle),
+        click: () => {
           map.fitBounds(layer.getBounds());
           layer.setStyle(highlightStyle);
         }
@@ -29,15 +30,8 @@ const Geomaps = () => {
     return <GeoJSON data={allGeoJson[0].data} onEachFeature={onEachFeature} style={normalStyle} />;
   };
 
-  const initialPosition = [-2.548926, 118.0148634];
-  const initialZoom = 5;
-
   return (
-    <MapContainer center={initialPosition} zoom={initialZoom} style={{ height: "100vh", width: "100%" }} whenCreated={mapInstance => {
-      mapInstance.on('click', () => {
-        mapInstance.setView(initialPosition, initialZoom);
-      });
-    }}>
+    <MapContainer center={[-2.548926, 118.0148634]} zoom={5} style={{ height: "100vh", width: "100%" }}>
       <GeoJSONWithClick />
     </MapContainer>
   );
